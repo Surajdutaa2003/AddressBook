@@ -302,7 +302,7 @@ class AddressBookMain {
     private addressBookManager: AddressBookManager;
 
     constructor() {
-        this.addressBookManager = new AddressBookManager();
+        this.addressBookManager = new AddressBookManager(); 
     }
 
     start(): void {
