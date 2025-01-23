@@ -1,6 +1,6 @@
 import * as readlineSync from 'readline-sync';
 
-// Person class representing a single individual
+// UC-1: Create Contact Class (Person)
 class Person {
     firstName: string;
     lastName: string;
@@ -22,7 +22,7 @@ class Person {
         this.email = email;
     }
 
-    // Display person details
+    // Show Person details
     showDetails(): void {
         console.log(`Name: ${this.firstName} ${this.lastName}`);
         console.log(`Address: ${this.address}, ${this.city}, ${this.state} - ${this.zip}`);
@@ -31,102 +31,106 @@ class Person {
     }
 }
 
-// AddressBook class to manage people
+// UC-2: AddressBook Class to manage Contacts
 class AddressBook {
-    private people: Person[] = [];
+    private contacts: Person[] = [];
 
-    // Method to check for duplicate person by name
-    private isDuplicate(firstName: string, lastName: string): boolean {
-        return this.people.some(person => person.firstName === firstName && person.lastName === lastName);
+    // Add a new contact
+    addPerson(person: Person): void {
+        this.contacts.push(person);
+        console.log("Contact added successfully!");
     }
 
-    // Method to add a new person to the address book
-    addPerson(person: Person): void {
-        if (this.isDuplicate(person.firstName, person.lastName)) {
-            console.log("Duplicate entry detected. Person with the same name already exists.");
+    // View all contacts
+    listContacts(): void {
+        if (this.contacts.length === 0) {
+            console.log("No contacts available.");
         } else {
-            this.people.push(person);
-            console.log("Person added successfully!");
+            this.contacts.forEach((contact, index) => {
+                console.log(`\nRecord ${index + 1}:`);
+                contact.showDetails();
+            });
         }
     }
 
-    // Method to display all people in the address book
-    listPeople(): void {
-        if (this.people.length === 0) {
-            console.log("No records to display.");
+    // UC-3: Edit an existing contact by name
+    editContact(firstName: string, lastName: string): void {
+        const contact = this.contacts.find(c => c.firstName === firstName && c.lastName === lastName);
+        if (contact) {
+            console.log("Contact found. Please enter new details:");
+            contact.address = readlineSync.question("Enter Address: ");
+            contact.city = readlineSync.question("Enter City: ");
+            contact.state = readlineSync.question("Enter State: ");
+            contact.zip = readlineSync.questionInt("Enter ZIP Code: ");
+            contact.phoneNumber = readlineSync.question("Enter Phone Number: ");
+            contact.email = readlineSync.question("Enter Email: ");
+            console.log("Contact updated successfully!");
         } else {
-            this.people.forEach((person, index) => {
-                console.log(`\nRecord ${index + 1}:`);
-                person.showDetails();
-            });
+            console.log("Contact not found.");
         }
     }
 }
 
-// Main class to manage the AddressBook
-class AddressBookMain {
+// Main Class to manage AddressBook and Contacts
+class AddressBookManager {
     private addressBook: AddressBook;
 
     constructor() {
-        this.addressBook = new AddressBook(); // Initialize AddressBook
+        this.addressBook = new AddressBook();
     }
 
-    // Method to start the AddressBook program
+    // Start the Address Book program
     start(): void {
-        console.log("Welcome to the Address Book!");
-
+        console.log("Welcome to the Address Book Program!");
         let isActive = true;
+
         while (isActive) {
             console.log("\nMain Menu:");
-            console.log("1. Add a New Contact");
-            console.log("2. View All Contacts");
-            console.log("3. Exit");
+            console.log("1. Add a New Contact (UC-1)");
+            console.log("2. View All Contacts (UC-2)");
+            console.log("3. Edit an Existing Contact (UC-3)");
+            console.log("4. Exit");
 
             const choice = readlineSync.questionInt("Enter your choice: ");
-
             switch (choice) {
                 case 1:
-                    this.addNewContact();
+                    console.log("\n--- Add New Contact (UC-1) ---");
+                    const firstName = readlineSync.question("Enter First Name: ");
+                    const lastName = readlineSync.question("Enter Last Name: ");
+                    const address = readlineSync.question("Enter Address: ");
+                    const city = readlineSync.question("Enter City: ");
+                    const state = readlineSync.question("Enter State: ");
+                    const zip = readlineSync.questionInt("Enter ZIP Code: ");
+                    const phoneNumber = readlineSync.question("Enter Phone Number: ");
+                    const email = readlineSync.question("Enter Email: ");
+                    const newContact = new Person(firstName, lastName, address, city, state, zip, phoneNumber, email);
+                    this.addressBook.addPerson(newContact);
                     break;
+                
                 case 2:
-                    this.viewAllContacts();
+                    console.log("\n--- View All Contacts (UC-2) ---");
+                    this.addressBook.listContacts();
                     break;
+                
                 case 3:
+                    console.log("\n--- Edit Existing Contact (UC-3) ---");
+                    const editFirstName = readlineSync.question("Enter First Name of the contact to edit: ");
+                    const editLastName = readlineSync.question("Enter Last Name of the contact to edit: ");
+                    this.addressBook.editContact(editFirstName, editLastName);
+                    break;
+                
+                case 4:
                     console.log("Exiting the program. Goodbye!");
                     isActive = false;
                     break;
+
                 default:
                     console.log("Invalid choice. Please select a valid option.");
             }
         }
     }
-
-    // Method to add a new contact (UC-2)
-    private addNewContact(): void {
-        console.log("\n--- Add New Contact ---");
-        const firstName = readlineSync.question("Enter First Name: ");
-        const lastName = readlineSync.question("Enter Last Name: ");
-        const address = readlineSync.question("Enter Address: ");
-        const city = readlineSync.question("Enter City: ");
-        const state = readlineSync.question("Enter State: ");
-        const zip = readlineSync.questionInt("Enter ZIP Code: ");
-        const phoneNumber = readlineSync.question("Enter Phone Number: ");
-        const email = readlineSync.question("Enter Email: ");
-
-        // Create new Person instance
-        const newPerson = new Person(firstName, lastName, address, city, state, zip, phoneNumber, email);
-
-        // Add new person to the address book
-        this.addressBook.addPerson(newPerson);
-    }
-
-    // Method to view all contacts
-    private viewAllContacts(): void {
-        console.log("\n--- View All Contacts ---");
-        this.addressBook.listPeople();
-    }
 }
 
-// Start the AddressBook program
-const addressBookMain = new AddressBookMain();
-addressBookMain.start();
+// Start the AddressBookManager to begin the program
+const addressBookManager = new AddressBookManager();
+addressBookManager.start();
