@@ -414,6 +414,10 @@ class AddressBookMain {
                     selectedAddressBook.getContactManager().sortByState();
                     break;
 
+
+
+
+                    
                 case 9:
                     selectedAddressBook.getContactManager().sortByZip();
                     break;
